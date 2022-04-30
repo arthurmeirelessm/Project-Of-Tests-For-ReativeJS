@@ -46,6 +46,11 @@ function removeSrt(arr, standard) {
 }
 
 
+
+function removeSpaces(arr){
+    return arr.filter(el => el.trim())
+}
+
 module.exports = {
-    readPath, readFiles,  removeSrt
+    readPath, readFiles,  removeSrt, removeSpaces 
 }
