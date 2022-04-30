@@ -6,12 +6,46 @@ const test = () => console.log("Hellooooooooooooo")
 
 
 const fn = require('fs')
+const { resolve } = require('path')
+const path = require('path')
 
-function readPath (path) {
-   let archive = fn.readdirSync(path)
-   console.log(archive)
+function readPath(pathToPath) {
+    return new Promise((resolve, reject) => {
+        try {
+            let archive = fn.readdirSync(pathToPath)
+            archive = archive.map(archive => path.join(pathToPath, archive))
+            resolve(archive)
+        } catch (e) {
+            reject(e)
+        }
+    })
 }
 
+
+function readFile(pathToPath) {
+      return new Promise((resolve, reject) => {
+          try {
+              const content = fn.readFileSync(pathToPath, {encoding: 'utf-8'})
+              resolve(content)
+          } catch(e) {
+              reject(e)
+          }
+      })
+}
+
+
+function readFiles( pathToPaths) {
+        return Promise.all(pathToPaths.map(pathToPath => readFile(pathToPath)))
+}
+
+
+
+
+function removeSrt(arr, standard) {
+    return arr.filter(el => el.endsWith(standard))
+}
+
+
 module.exports = {
-    test, readPath
+    readPath, readFiles,  removeSrt
 }
