@@ -1,4 +1,8 @@
+const path = require('path')
 const fn = require('./functionsToRequire')
 
-fn.test()
+
+const pathToDirectoty = path.join(__dirname, '..', 'legendas')
+
+fn.readPath(pathToDirectoty)
 
