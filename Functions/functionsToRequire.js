@@ -51,6 +51,20 @@ function removeSpaces(arr){
     return arr.filter(el => el.trim())
 }
 
+
+function removeTimes(arr, standard){
+    return arr.filter(el => !el.includes(standard))
+}
+
+
+function removeIfOnlyNumber (arr) {
+    return arr.filter(el => {
+        const num = parseInt(el.trim())
+        return !(num != 0 && !!num)
+    })
+}
+
+
 module.exports = {
-    readPath, readFiles,  removeSrt, removeSpaces 
+    readPath, readFiles,  removeSrt, removeSpaces, removeTimes, removeIfOnlyNumber
 }

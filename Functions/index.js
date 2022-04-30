@@ -10,7 +10,8 @@ fn.readPath(pathToDirectoty)
     .then(archiveSrt => fn.readFiles(archiveSrt))
     .then(contents => contents.join('\n'))
     .then(allCotents => allCotents.split('\n'))
-    .then(arr => fn.removeSpaces(arr))
+    .then(linesWithSpace => fn.removeSpaces(linesWithSpace))
+    .then(archive => fn.removeTimes(archive, '-->'))
+    .then(archive => fn.removeIfOnlyNumber(archive))
     .then(console.log)
-
 
