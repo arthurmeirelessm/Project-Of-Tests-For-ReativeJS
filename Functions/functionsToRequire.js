@@ -23,6 +23,8 @@ function readPath(pathToPath) {
 }
 
 
+//FUNÇÃO PARA LEITURA DE ARQUIVO PASSADO (legendas) / UMA FUNÇÃO PAI QUE UTILIZA O NEW PROMISE POSSÍBILITANDO A LÓGICA FUNCIONAL DO PROJETO NO ARQUIVO DE INDEX.JS
+
 function readFile(pathToPath) {
     return new Promise((resolve, reject) => {
         try {
@@ -42,21 +44,27 @@ function readFiles(pathToPaths) {
 
 
 
+//REMOVE O .SRT DOS FINS DAS NOMECLATURAS DOS ARQUIVOS
+
 function removeSrt(arr, standard) {
     return arr.filter(el => el.endsWith(standard))
 }
 
-
+//REMOVE OS ESPAÇOS EM BRANCO DOS TEXTOS DO ARQUIVO
 
 function removeSpaces(arr) {
     return arr.filter(el => el.trim())
 }
 
 
+//REMOVE TRECHO DE HORARIO SETADO POR '-->'
+
 function removeTimes(arr, standard) {
     return arr.filter(el => !el.includes(standard))
 }
 
+
+//REMOVE NÚMEROS DOS TEXTOS DO ARQUIVO
 
 function removeIfOnlyNumber(arr) {
     return arr.filter(el => {
@@ -64,6 +72,8 @@ function removeIfOnlyNumber(arr) {
         return !(num != 0 && !!num)
     })
 }
+
+//REMOVE SIMBOLOS DO TEXTOS DO ARQUIVO
 
 function removeSimbols(simbols) {
     return function (arr) {
