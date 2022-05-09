@@ -46,7 +46,7 @@ const separateForWord = allContents => allContents.split(' ')
 
 //ABAIXO EXISTE TODOS OS TIPOS DE TESTES SOBRE TRATATIVAS DE DADOS FEITO PRA COMPOR O OBJETIVO DO PROJETO, TESTAR O MAIOR NÚMERO DE FUNÇÕES REATIVAS POSSÍVEIS
 
-fn.readPath(pathToDirectoty)
+/*fn.readPath(pathToDirectoty)
     .then(archive => fn.removeSrt(archive, '.srt'))
     .then(archiveSrt => fn.readFiles(archiveSrt))
     .then(mergeContents)
@@ -63,5 +63,17 @@ fn.readPath(pathToDirectoty)
     .then(archive => fn.removeIfOnlyNumber(archive))
     .then(groupWord)
     .then(ApplicationOfSortToQtde('qtde', 'desc'))
-    .then(console.log)
+    .then(console.log)*/
+
+
+fn.readPath(pathToDirectoty)
+    .pipe(
+        fn.elementsEndingWith('.srt'),
+        fn.readFile()
+    )
+    .subscribe(console.log)
+
+
+
+
 

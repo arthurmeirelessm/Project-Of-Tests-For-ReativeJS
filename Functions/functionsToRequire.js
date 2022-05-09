@@ -9,15 +9,18 @@ const { Certificate } = require('crypto')
 const fn = require('fs')
 const { resolve } = require('path')
 const path = require('path')
+const { nextTick } = require('process')
+const { Observable } = require('rxjs')
 
 function readPath(pathToPath) {
-    return new Promise((resolve, reject) => {
+    return new Observable((subscriber) => {
         try {
-            let archive = fn.readdirSync(pathToPath)
-            archive = archive.map(archive => path.join(pathToPath, archive))
-            resolve(archive)
+            fn.readdirSync(pathToPath).forEach(archive => {
+                subscriber.next(path.join(pathToPath, archive))
+            })
+            subscriber.complete()
         } catch (e) {
-            reject(e)
+            subscriber.error(e)
         }
     })
 }
@@ -26,23 +29,29 @@ function readPath(pathToPath) {
 //FUNÇÃO PARA LEITURA DE ARQUIVO PASSADO (legendas) / UMA FUNÇÃO PAI QUE UTILIZA O NEW PROMISE POSSÍBILITANDO A LÓGICA FUNCIONAL DO PROJETO NO ARQUIVO DE INDEX.JS
 
 function readFile(pathToPath) {
-    return new Promise((resolve, reject) => {
-        try {
-            const content = fn.readFileSync(pathToPath, { encoding: 'utf-8' })
-            resolve(content)
-        } catch (e) {
-            reject(e)
+    return createPipeableOperator(subscriber => ({
+        next(pathToPath) {
+            try {
+                const content = fn.readFileSync(pathToPath, { encoding: 'utf-8' })
+                subscriber.next(content.toString())
+                subscriber.complete()
+            } catch (e) {
+                subscriber.error(e)
+            }
         }
-    })
+    }))
 }
 
 
-function readFiles(pathToPaths) {
-    return Promise.all(pathToPaths.map(pathToPath => readFile(pathToPath)))
+function elementsEndingWith(patternText) {
+    return createPipeableOperator(subscriber => ({
+        next(text) {
+            if (text.endsWith(patternText)) {
+                subscriber.next(text)
+            }
+        }
+    }))
 }
-
-
-
 
 //REMOVE O .SRT DOS FINS DAS NOMECLATURAS DOS ARQUIVOS
 
@@ -89,10 +98,28 @@ function removeSimbols(simbols) {
 }
 
 
+function createPipeableOperator(operatorFn) {
+    return function (source) {
+        return new Observable(subscriber => {
+            const sub = operatorFn(subscriber)
+            source.subscribe({
+                next: sub.next,
+                error: sub.complete || (e => subscriber.complete(e)),
+                complete: sub.complete || (e => subscriber.complete(e))
+            })
+        })
+    }
+}
+
+
+
+
+
 
 module.exports = {
     readPath,
-    readFiles,
+    readFile,
+    elementsEndingWith,
     removeSrt,
     removeSpaces,
     removeTimes,
