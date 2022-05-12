@@ -1,5 +1,6 @@
 const path = require('path')
 const fn = require('./functionsToRequire')
+const { first,  toArray } = require('rxjs/operators')
 
 
 const pathToDirectoty = path.join(__dirname, '..', 'legendas')
@@ -11,16 +12,10 @@ const simbols = [
 
 
 
+
+
 //AGRUPA AS PALAVRAS
 
-function groupWord(word) {
-    return Object.values(word.reduce((acc, word) => {
-        const el = word.toLowerCase()
-        const qtde = acc[el] ? acc[el].qtde + 1 : 1
-        acc[el] = { elemento: el, qtde: qtde }
-        return acc
-    }, {}))
-}
 
 
 
@@ -69,7 +64,16 @@ const separateForWord = allContents => allContents.split(' ')
 fn.readPath(pathToDirectoty)
     .pipe(
         fn.elementsEndingWith('.srt'),
-        fn.readFile()
+        fn.readFile(),
+        fn.separateTextBy('\n'),
+        fn.removeEmptySpaces(),
+        fn.removeIfOnlyNumber(),
+        fn.removeSimbols(simbols),
+        fn.separateTextBy(' '),
+        fn.removeEmptySpaces(),
+        toArray(),
+        fn.groupWord()
+        
     )
     .subscribe(console.log)
 
